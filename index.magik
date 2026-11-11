@@ -1,15 +1,63 @@
-white("olá mundo!")
+write("olá mundo!")
 #comentário de uma linha
 nome << "Nicoly"
 Altura << 1.75
-ativo << true
 ativo << _true
-tipo << :poste
+tipo << :poste # fixa
 
-white(nome,"tem", idade, "anos")
+write(nome,"tem", idade, "anos")
 
 #sintaxe if
 nome << "Ana"
-if nome _is "Ana" _then
-    white("Olá, Ana!")
-end
+_if nome _is "Ana" _then
+	write("Olá, Ana!")
+_endif
+
+# Etapa 5 — Classes e métodos
+#  Em Magik, uma "classe" é um exemplar (exemplar). Você o define com def_slotted_exemplar, 
+# lista os campos (slots) e depois escreve os métodos. Por convenção, cada exemplar tem new()
+#  (cria a instância) e init() (preenche os campos).
+# _unset << sem valor - vazio
+def_slotted_exemplar( :Pessoa
+	{{:nome, _unset},{:idade, _unset} } ) 
+$ 
+_method pessoa.new( nome, idade )
+	_return _clone.init( nome, idade )
+_endmethod
+$
+_private _method pessoa.init( nome, idade )
+	.nome << nome
+	.idade << idade
+	_return _self
+_endmethod
+
+_method pessoa.apresentar()
+	write("Olá, meu nome é", .nome, "e tenho", .idade, "anos.")
+_endmethod
+$
+# uso
+p<<pessoa.new("Nicoly", 20)
+p.apresentar()
+
+# Herança
+
+def_slotted-exemplar(:funcionario, {
+		{:cargo,_unset}}, {:pessoa})
+$
+_method funcionario.new(nome,idade,cargo)
+	_return _clone.init(nome,idade,cargo})
+_endmethod
+$
+
+_private _method funcionario.new(nome, idade, cargo)
+_return _clone.init(nome, idade, cargo)
+_endmethod
+$
+
+_private _method funcionario.init(nome, idade, cargo)
+_super(pessoa).init(nome,idade)
+.cargo <<cargo
+_return _self
+_endmethod
+$
+

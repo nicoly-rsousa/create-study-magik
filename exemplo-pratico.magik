@@ -1,0 +1,48 @@
+# Exemplo pratico: cadastro simples de funcionarios de uma empresa.
+# Cada chamada a funcionario.new cria um objeto independente.
+
+def_slotted_exemplar(:funcionario,
+	{{:nome, _unset},
+	 {:matricula, _unset},
+	 {:cargo, _unset},
+	 {:setor, _unset}})
+$
+
+_method funcionario.new(nome, matricula, cargo, setor)
+	_return _clone.init(nome, matricula, cargo, setor)
+_endmethod
+$
+
+_private _method funcionario.init(nome, matricula, cargo, setor)
+	.nome << nome
+	.matricula << matricula
+	.cargo << cargo
+	.setor << setor
+	_return _self
+_endmethod
+$
+
+_method funcionario.apresentar()
+	write("Funcionario:", .nome)
+	write("Matricula:", .matricula)
+	write("Cargo:", .cargo)
+	write("Setor:", .setor)
+_endmethod
+$
+
+# Cadastro de dois funcionarios.
+funcionario1 << funcionario.new(
+	"Nicoly Sousa",
+	"COL-001",
+	"Analista de Sistemas",
+	"Tecnologia")
+
+funcionario2 << funcionario.new(
+	"Ana Lima",
+	"COL-002",
+	"Coordenadora",
+	"Operacoes")
+
+# Cada objeto mantem seus proprios dados.
+funcionario1.apresentar()
+funcionario2.apresentar()

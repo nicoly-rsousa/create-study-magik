@@ -1,0 +1,75 @@
+# Exemplo pratico de heranca: funcionario especializa pessoa.
+# Os slots nome e matricula sao herdados de pessoa.
+
+def_slotted_exemplar(:pessoa,
+	{{:nome, _unset},
+	 {:matricula, _unset}})
+$
+
+# _clone cria um objeto independente a partir do exemplar pessoa; os argumentos
+# sao dados para init, nao substituem a criacao do objeto. Sem clone, init alteraria
+# o exemplar pessoa e os cadastros nao seriam instancias independentes.
+# new nao e obrigatorio na linguagem; e o construtor publico adotado neste exemplo.
+_method pessoa.new(nome, matricula)
+	_return _clone.init(nome, matricula)
+_endmethod
+$
+
+# Inicializa os slots do objeto recem-criado; neste exemplo, new chama este metodo,
+# portanto ele e necessario para este fluxo, mas nao e obrigatorio na linguagem.
+_private _method pessoa.init(nome, matricula)
+	.nome << nome
+	.matricula << matricula
+	_return _self
+_endmethod
+$
+
+# Exibe os dados comuns de uma pessoa; e opcional e so precisa existir se quisermos
+# disponibilizar essa apresentacao.
+_method pessoa.apresentar()
+	write("Nome:", .nome)
+	write("Matricula:", .matricula)
+_endmethod
+$
+
+def_slotted_exemplar(:funcionario,
+	{{:cargo, _unset},
+	 {:setor, _unset}},
+	{:pessoa})
+$
+
+# Cria uma instancia independente de funcionario e passa seus dados para init.
+# Enviar somente os argumentos nao cria essa instancia; sem clone, os campos do
+# exemplar funcionario seriam alterados. O nome new nao e obrigatorio na linguagem.
+_method funcionario.new(nome, matricula, cargo, setor)
+	_return _clone.init(nome, matricula, cargo, setor)
+_endmethod
+$
+
+# Inicializa os dados herdados e os especificos do funcionario; e necessario para
+# a implementacao atual de new, mas nao e uma exigencia da linguagem.
+_private _method funcionario.init(nome, matricula, cargo, setor)
+	_super(pessoa).init(nome, matricula)
+	.cargo << cargo
+	.setor << setor
+	_return _self
+_endmethod
+$
+
+# Sobrescreve a apresentacao para incluir cargo e setor; e opcional. Sem este metodo,
+# funcionario poderia usar a apresentacao herdada de pessoa, sem esses dados extras.
+_method funcionario.apresentar()
+	_super(pessoa).apresentar()
+	write("Cargo:", .cargo)
+	write("Setor:", .setor)
+_endmethod
+$
+
+# O funcionario recebe os dados de pessoa e adiciona seus dados profissionais.
+funcionario1 << funcionario.new(
+	"Nicoly Sousa",
+	"COL-001",
+	"Analista de Sistemas",
+	"Tecnologia")
+
+funcionario1.apresentar()
