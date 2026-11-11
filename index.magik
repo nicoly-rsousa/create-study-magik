@@ -1,0 +1,15 @@
+white("olá mundo!")
+#comentário de uma linha
+nome << "Nicoly"
+Altura << 1.75
+ativo << true
+ativo << _true
+tipo << :poste
+
+white(nome,"tem", idade, "anos")
+
+#sintaxe if
+nome << "Ana"
+if nome _is "Ana" _then
+    white("Olá, Ana!")
+end
