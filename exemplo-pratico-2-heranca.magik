@@ -23,7 +23,10 @@ _private _method pessoa.init(nome, matricula)
 	_return _self
 _endmethod
 $
-
+funcionario1 << funcionario.new(...) # cria um clone
+funcionario2 << funcionario.new(...) # cria outro clonefuncionario1 << funcionario.new(...) # cria um clone
+funcionario2 << funcionario.new(...) # cria outro clonefuncionario1 << funcionario.new(...) # cria um clone
+funcionario2 << funcionario.new(...) # cria outro clone
 # Exibe os dados comuns de uma pessoa; e opcional e so precisa existir se quisermos
 # disponibilizar essa apresentacao.
 _method pessoa.apresentar()
