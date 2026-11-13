@@ -1,0 +1,59 @@
+# Exemplo pratico de encapsulamento: atualizar dados por metodos com validacao.
+# Convencao deste exemplo: usar consultar_idade e alterar_idade em vez de acessar
+# o slot .idade diretamente fora dos metodos de pessoa.
+
+def_slotted_exemplar(:pessoa,
+	{{:nome, _unset},
+		{:idade, _unset}})
+$
+
+# Cria uma instancia e encaminha os dados para init; new e uma convencao deste
+# exemplo, nao uma palavra-chave obrigatoria da linguagem.
+_method pessoa.new(nome, idade)
+	_return _clone.init(nome, idade)
+_endmethod
+$
+
+# Inicializa os dados. A verificacao evita criar uma pessoa com idade fora do
+# intervalo adotado neste exemplo; init e chamado por new, mas nao e obrigatorio.
+_private _method pessoa.init(nome, idade)
+	_if idade < 0 _or idade > 120 _then
+		write("Erro: idade deve estar entre 0 e 120.")
+		_return _false
+	_endif
+	
+	.nome << nome
+	.idade << idade
+	_return _self
+_endmethod
+$
+
+# Altera a idade somente se estiver no intervalo permitido. Este metodo e opcional,
+# mas e a interface recomendada neste exemplo para mudar a idade.
+_method pessoa.alterar_idade(nova_idade)
+	_if nova_idade < 0 _or nova_idade > 120 _then
+		write("Erro: idade deve estar entre 0 e 120.")
+		_return _false
+	_endif
+	
+	.idade << nova_idade
+	_return _true
+_endmethod
+$
+
+# Fornece a idade sem exigir que o codigo chamador leia o slot diretamente.
+# E opcional e existe para oferecer uma consulta pela interface do objeto.
+_method pessoa.consultar_idade()
+	_return .idade
+_endmethod
+$
+
+# Uso: a idade invalida e rejeitada sem substituir o valor atual.
+pessoa1 << pessoa.new("Nicoly Sousa", 20)
+write("Idade inicial:", pessoa1.consultar_idade())
+
+pessoa1.alterar_idade(21)
+write("Idade atualizada:", pessoa1.consultar_idade())
+
+pessoa1.alterar_idade(150)
+write("Idade apos tentativa invalida:", pessoa1.consultar_idade())
