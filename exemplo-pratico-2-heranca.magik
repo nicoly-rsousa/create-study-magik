@@ -3,7 +3,7 @@
 
 def_slotted_exemplar(:pessoa,
 	{{:nome, _unset},
-	 {:matricula, _unset}})
+		{:matricula, _unset}})
 $
 
 # _clone cria um objeto independente a partir do exemplar pessoa; os argumentos
@@ -37,7 +37,7 @@ $
 
 def_slotted_exemplar(:funcionario,
 	{{:cargo, _unset},
-	 {:setor, _unset}},
+		{:setor, _unset}},
 	{:pessoa})
 $
 

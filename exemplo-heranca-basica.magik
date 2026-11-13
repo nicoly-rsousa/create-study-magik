@@ -1,0 +1,44 @@
+# Exemplo simples de heranca em Magik.
+# A classe cachorro herda as caracteristicas de animal.
+
+def_slotted_exemplar(:animal,
+	{{:nome, _unset},
+	 {:idade, _unset}})
+$
+_method animal.new(nome, idade)
+	_return _clone.init(nome, idade)
+_endmethod
+$
+_private _method animal.init(nome, idade)
+	.nome << nome
+	.idade << idade
+	_return _self
+_endmethod
+$
+_method animal.apresentar()
+	write("Nome:", .nome)
+	write("Idade:", .idade)
+_endmethod
+$
+
+def_slotted_exemplar(:cachorro,
+	{{:raca, _unset}},
+	{:animal})
+$
+_method cachorro.new(nome, idade, raca)
+	_return _clone.init(nome, idade, raca)
+_endmethod
+$
+_private _method cachorro.init(nome, idade, raca)
+	_super(animal).init(nome, idade)
+	.raca << raca
+	_return _self
+_endmethod
+$
+_method cachorro.latir()
+	write(.nome, "está latindo!")
+_endmethod
+$
+meu_cachorro << cachorro.new("Rex", 5, "Pastor Alemão")
+meu_cachorro.apresentar()
+meu_cachorro.latir()

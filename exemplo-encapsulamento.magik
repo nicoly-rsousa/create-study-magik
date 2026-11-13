@@ -1,0 +1,49 @@
+# Exemplo de encapsulamento em Magik.
+# O estado interno do objeto fica protegido e so pode ser acessado
+# por metodos da propria classe.
+
+def_slotted_exemplar(:conta_bancaria,
+	{{:saldo, 0},
+	 {:titular, _unset}})
+$
+_method conta_bancaria.new(titular, saldo_inicial)
+	_return _clone.init(titular, saldo_inicial)
+_endmethod
+$
+_private _method conta_bancaria.init(titular, saldo_inicial)
+	.titular << titular
+	.saldo << saldo_inicial
+	_return _self
+_endmethod
+$
+_method conta_bancaria.depositar(valor)
+	_if valor <= 0 _then
+		write("Valor invalido para deposito.")
+		_return
+	_endif
+	.saldo << .saldo + valor
+	write("Deposito realizado. Saldo atual:", .saldo)
+_endmethod
+$
+_method conta_bancaria.sacar(valor)
+	_if valor <= 0 _then
+		write("Valor invalido para saque.")
+		_return
+	_endif
+	_if valor > .saldo _then
+		write("Saldo insuficiente.")
+		_return
+	_endif
+	.saldo << .saldo - valor
+	write("Saque realizado. Saldo atual:", .saldo)
+_endmethod
+$
+_method conta_bancaria.consultar_saldo()
+	write("Titular:", .titular)
+	write("Saldo:", .saldo)
+_endmethod
+$
+conta << conta_bancaria.new("Nicoly", 1000)
+conta.depositar(250)
+conta.sacar(300)
+conta.consultar_saldo()
