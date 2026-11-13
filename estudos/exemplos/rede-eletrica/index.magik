@@ -1,0 +1,76 @@
+# ===== 1) Exemplar PAI =====
+_pragma(classify_level=basic)
+def_slotted_exemplar( :equipamento_rede,
+	{
+		{ :codigo, _unset },
+		{ :tensao_kv, _unset }
+	})
+$
+
+_pragma(classify_level=basic)
+_method equipamento_rede.new( p_codigo, p_tensao_kv )
+	## Cria um equipamento genérico da rede.
+	_return _clone.init( p_codigo, p_tensao_kv )
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_private _method equipamento_rede.init( p_codigo, p_tensao_kv )
+	.codigo << p_codigo
+	.tensao_kv << p_tensao_kv
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method equipamento_rede.descricao()
+	## Descrição padrão (usada por quem não sobrescrever).
+	_return "Equipamento " + .codigo
+_endmethod
+$
+
+# ===== 2) Filho: transformador =====
+_pragma(classify_level=basic)
+def_slotted_exemplar( :transformador_rede,
+	{
+		{ :potencia_kva, _unset }
+	},
+	{ :equipamento_rede } )
+$
+
+_pragma(classify_level=basic)
+_method transformador_rede.new( p_codigo, p_tensao_kv, p_potencia_kva )
+	_return _clone.init( p_codigo, p_tensao_kv, p_potencia_kva )
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_private _method transformador_rede.init( p_codigo, p_tensao_kv, p_potencia_kva )
+	_super(equipamento_rede).init( p_codigo, p_tensao_kv )
+	.potencia_kva << p_potencia_kva
+	_return _self
+_endmethod
+$
+
+_pragma(classify_level=basic)
+_method transformador_rede.descricao()
+	## Reaproveita a descrição do pai e acrescenta a potência.
+	_return _super(equipamento_rede).descricao() + " | potência: " + .potencia_kva.write_string + " kVA"
+_endmethod
+$
+
+# ===== 3) Filho: chave =====
+_pragma(classify_level=basic)
+def_slotted_exemplar( :chave_rede,
+	{
+		{ :estado, "fechada" }
+	},
+	{ :equipamento_rede } )
+$
+
+_pragma(classify_level=basic)
+_method chave_rede.descricao()
+	## Substitui por completo a descrição do pai.
+	_return "Chave " + .codigo + " - estado: " + .estado
+_endmethod
+$

@@ -58,6 +58,6 @@ _private _method funcionario.init(nome, idade, cargo)
 _super(pessoa).init(nome,idade)
 .cargo <<cargo
 _return _self
-_endmethod
+_endmethodok
 $
 
