@@ -1,0 +1,34 @@
+_pragma(classify_level=basic, topic={})
+def_slotted_exemplar(:animal,
+	{
+		{:nome, _unset},
+		{:idade, _unset}
+		{:especie, _unset}
+	})
+$
+_method animal.new(nome, idade, especie)
+	_return _clone.init(nome, idade, especie)
+_endmethod
+$
+_private _method animal.init(nome, idade, especie)
+	.nome << nome
+	.idade << idade
+	.especie << especie
+	_return _self
+_endmethod
+
+$
+_method animal.descricao()
+	_return "Animal: " + .nome + ", idade: " + .idade.write_string + ", espécie: " + .especie
+_endmethod
+$ 
+
+_method animal.fazer_som()
+	if .especie == "cachorro" _then
+		_return "Au Au!"
+		elseif .especie == "gato" _then
+			_return "Miau!"
+			else
+            _return "Sol desconhecido!"
+            
+			
