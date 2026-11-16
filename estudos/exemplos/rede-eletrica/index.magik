@@ -74,3 +74,8 @@ _method chave_rede.descricao()
 	_return "Chave " + .codigo + " - estado: " + .estado
 _endmethod
 $
+def_slotted_exemplar( :chave_rede_automatica,
+	{
+		{ :tempo_acionamento_s, _unset }
+	},
+	{ :chave_rede } )
