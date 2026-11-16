@@ -1,0 +1,33 @@
+_local codigos << rope.new()
+codigos.add_last("TR-001")
+codigos.add_last("TR-002")
+codigos.add_last("CH-010")
+codigos.add_last("TR-003")
+codigos.add_last("PT-100")
+codigos.add_last("CH-011")
+
+# Cria uma tabela hash vazia para guardar a quantidade de códigos de cada tipo.
+_local contagem << hash_table.new()
+
+# Percorre cada código armazenado na coleção codigos.
+_for codigo _over codigos.fast_elements()
+_loop
+	# Extrai o prefixo de letras antes do hífen (por exemplo, "TR" de "TR-001").
+	_local tipo << /([A-Z]+)-.*/.replace_all(codigo, "$1")
+	
+	# Se este tipo ainda não estiver na tabela, inicia sua contagem em zero.
+	_if contagem[tipo] _is _unset
+	_then
+		contagem[tipo] << 0
+	_endif
+	
+	# Incrementa em um a quantidade registrada para este tipo.
+	contagem[tipo] +<< 1
+_endloop
+
+# Percorre os pares tipo/quantidade armazenados na tabela.
+_for tipo, quantidade _over contagem.fast_keys_and_elements()
+_loop
+	# Exibe cada tipo e sua quantidade no formato "tipo: quantidade".
+	write(tipo, ": ", quantidade)
+_endloop

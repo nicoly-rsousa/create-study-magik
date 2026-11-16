@@ -1,0 +1,3 @@
+_local set << equality_set.new()
+set.add("item 1")
+set.add("item 2") # Adiciona uma String

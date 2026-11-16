@@ -1,0 +1,7 @@
+# # usada para armazenar características de
+#  um elemento em pares de chave e valor (ex.: nome → TR001, tensão → 13,8 kV)
+
+_local estado << property.new()
+estado[:codigo] << "TR001"
+estado[:tensao_kv] << 13.8
+write(estado[:ch011]) #mostrar o valor da chave ch011 (que não existe, então retorna _unset)
