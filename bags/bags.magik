@@ -1,0 +1,11 @@
+_local bag << bags.new()>>  
+#aceita repetidos sem importar com a ordem de inserção
+bag.add("item 1")
+bag.add("item 2") # Adiciona uma String
+bag.add(:tr001) # Adiciona um símbolo
+bag.add(3.14) # Adiciona um número
+write("Bag de itens: " + bag.write_string) #mostrar a bag completa
+write("Tamanho da bag: " + bag.size().write_string) #mostrar o tamanho da bag
+write("Contagem do item 2: " + bag.count("item 2").write_string) #mostrar quantas vezes o item 2 aparece na bag
+
+
