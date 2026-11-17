@@ -1,0 +1,38 @@
+# Procedimento com parametro opcional e dois valores de retorno.
+_global calcular_energia_proc << _proc@calcular_energia_proc(potencia_kva, horas _optional fator_potencia)
+	fator_potencia << fator_potencia.default(1.0)
+	_local energia_kwh << potencia_kva * fator_potencia * horas
+	_return energia_kwh, energia_kwh / 1000
+_endproc
+$
+
+# Exemplo de chamada: fator_potencia e opcional; se omitido, vale 1.0.
+(energia_proc_kwh, energia_proc_mwh) << calcular_energia_proc(100, 8)
+write("Procedimento: ", energia_proc_kwh, " kWh; ", energia_proc_mwh, " MWh")
+$
+
+# Exemplar com um metodo que tambem aceita parametro opcional
+# e retorna energia em kWh e MWh.
+def_slotted_exemplar(:transformador_exemplo,
+	{{:potencia_kva, _unset}})
+$
+_method transformador_exemplo.new(potencia_kva)
+	_return _clone.init(potencia_kva)
+_endmethod
+$
+_private _method transformador_exemplo.init(potencia_kva)
+	.potencia_kva << potencia_kva
+	_return _self
+_endmethod
+$
+_method transformador_exemplo.calcular_energia(horas, _optional fator_potencia)
+	fator_potencia << fator_potencia.default(1.0)
+	_local energia_kwh << .potencia_kva * fator_potencia * horas
+	_return energia_kwh, energia_kwh / 1000
+_endmethod
+$
+
+# Os resultados multiplos sao recebidos em variaveis entre parenteses.
+transformador << transformador_exemplo.new(100)
+(energia_metodo_kwh, energia_metodo_mwh) << transformador.calcular_energia(8, 0.9)
+write("Metodo: ", energia_metodo_kwh, " kWh; ", energia_metodo_mwh, " MWh")

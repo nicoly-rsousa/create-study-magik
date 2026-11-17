@@ -1,0 +1,29 @@
+_local codigos << rope.new()
+codigos.add_last("TR-001")
+codigos.add_last("CH-010")
+codigos.add_last("TR-002")
+codigos.add_last("PT-100")
+codigos.add_last("TR-003")
+
+_local grupos << hash_table.new()
+
+_for codigo _over codigos.fast_elements()
+_loop
+	_local tipo << /([A-Z]+)-.*/.replace_all(codigo, "$1")
+	
+	_if grupos[tipo] _is _unset
+	_then
+		grupos[tipo] << rope.new()
+	_endif
+	
+	grupos[tipo].add_last(codigo)
+_endloop
+
+_for tipo, lista _over grupos.fast_keys_and_elements()
+_loop
+	write("Tipo ", tipo, " (", lista.size, " itens):")
+	_for item _over lista.fast_elements()
+	_loop
+		write("   ", item)
+	_endloop
+_endloop

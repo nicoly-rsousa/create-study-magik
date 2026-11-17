@@ -1,0 +1,15 @@
+_local transformador << property.new()
+transformador[:10] << 15
+transformador[:20] << 25
+transformador[:30] << 35
+transformador[:40] << 45
+transformador[:50] << 55
+
+# write("Transformador 10: ", transformador[:10], " kVA")
+# write("Transformador 20: ", transformador[:20], " kVA")
+# write("Transformador 30: ", transformador[:30], " kVA")
+
+_for transformador_id, potencia _over transformador.fast_keys_and_elements()
+_loop
+	write("Transformador ", transformador_id, ": ", potencia, " kVA")
+_endloop

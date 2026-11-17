@@ -1,0 +1,19 @@
+_local lista << rope.new()
+lista.add("equipamento 1")
+lista.add("equipamento 2")
+lista.add("equipamento 3")
+lista.add("equipamento 4")
+lista.add("equipamento 5")
+
+for item _over lista.fast_elements()
+_loop
+_if item.lowercase().subseq(1,1)="T" _then
+     write("Equipamento: " + item) # mostrar cada equipamento da lista
+     _endif
+_endloop
+
+# Código	Resultado Do nome Amanda
+# item.subseq(1, 1)	"A"
+# item.subseq(1, 3)	"Ama"
+# item.subseq(2, 4)	"man"
+# item.subseq(1, 6)	"Amanda"
