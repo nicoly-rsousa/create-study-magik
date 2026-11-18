@@ -1,0 +1,166 @@
+# Fase 8: funcionalidades pequenas, modulares e testaveis.
+# Modulo didatico: cada exemplar representa uma parte da funcionalidade.
+
+def_slotted_exemplar(:transformador_f8,
+	{{:id, _unset},
+	 {:potencia_kva, _unset}})
+$
+_method transformador_f8.new(id, potencia_kva)
+	_return _clone.init(id, potencia_kva)
+_endmethod
+$
+_private _method transformador_f8.init(id, potencia_kva)
+	.id << id
+	.potencia_kva << potencia_kva
+	_return _self
+_endmethod
+$
+
+def_slotted_exemplar(:alimentador_f8,
+	{{:id, _unset},
+	 {:transformadores, _unset}})
+$
+_method alimentador_f8.new(id)
+	_return _clone.init(id)
+_endmethod
+$
+_private _method alimentador_f8.init(id)
+	.id << id
+	.transformadores << rope.new()
+	_return _self
+_endmethod
+$
+_method alimentador_f8.adicionar_transformador(transformador)
+	.transformadores.add_last(transformador)
+	_return _self
+_endmethod
+$
+
+# Exercicio 1: soma as potencias sem criar uma segunda colecao em memoria.
+_method alimentador_f8.potencia_total()
+	_local total_kva << 0
+	_for transformador _over .transformadores.fast_elements()
+	_loop
+		total_kva +<< transformador.potencia_kva
+	_endloop
+	_return total_kva
+_endmethod
+$
+
+# Exercicio 2: valida IDs unicos e potencias maiores que zero.
+# As inconsistencias sao retornadas em uma rope para facilitar sua exibicao.
+_method alimentador_f8.validar_transformadores()
+	_local inconsistencias << rope.new()
+	_local ids_vistos << hash_table.new()
+
+	_for transformador _over .transformadores.fast_elements()
+	_loop
+		_if transformador.id _is _unset
+		_then
+			inconsistencias.add_last("Transformador sem ID.")
+		_else
+			_if ids_vistos[transformador.id] _isnt _unset
+			_then
+				inconsistencias.add_last("ID duplicado: " + transformador.id)
+			_else
+				ids_vistos[transformador.id] << _true
+			_endif
+		_endif
+
+		_if transformador.potencia_kva _is _unset
+		_then
+			inconsistencias.add_last("Transformador sem potencia informada.")
+		_else
+			_if transformador.potencia_kva <= 0
+			_then
+				inconsistencias.add_last("Potencia deve ser maior que zero.")
+			_endif
+		_endif
+	_endloop
+
+	_return inconsistencias
+_endmethod
+$
+
+# Exercicio 3: ponto de entrada que pode ser ligado a uma acao de interface.
+# O registro no menu, plugin ou dialogo depende da API da aplicacao GNM.
+_global acao_validar_alimentador_f8 << _proc@acao_validar_alimentador_f8(alimentador)
+	_local inconsistencias << alimentador.validar_transformadores()
+
+	_if inconsistencias.size = 0
+	_then
+		write("Validacao concluida: nenhum problema encontrado.")
+	_else
+		write("Validacao encontrou ", inconsistencias.size, " problema(s):")
+		_for mensagem _over inconsistencias.fast_elements()
+		_loop
+			write("- ", mensagem)
+		_endloop
+	_endif
+
+	_return inconsistencias
+_endproc
+$
+
+# Testes automaticos simples para os tres casos principais.
+_global executar_testes_fase8 << _proc@executar_testes_fase8()
+	_local falhas << 0
+	_local alimentador_valido << alimentador_f8.new("AL-01")
+	alimentador_valido.adicionar_transformador(transformador_f8.new("TR-01", 100))
+	alimentador_valido.adicionar_transformador(transformador_f8.new("TR-02", 50))
+
+	_if alimentador_valido.potencia_total() = 150
+	_then
+		write("OK: relatorio calcula 150 kVA.")
+	_else
+		write("FALHA: potencia total esperada de 150 kVA.")
+		falhas +<< 1
+	_endif
+
+	_local inconsistencias_validas << alimentador_valido.validar_transformadores()
+	_if inconsistencias_validas.size = 0
+	_then
+		write("OK: alimentador valido nao tem inconsistencias.")
+	_else
+		write("FALHA: alimentador valido deveria passar na validacao.")
+		falhas +<< 1
+	_endif
+
+	_local alimentador_invalido << alimentador_f8.new("AL-02")
+	alimentador_invalido.adicionar_transformador(transformador_f8.new("TR-01", 100))
+	alimentador_invalido.adicionar_transformador(transformador_f8.new("TR-01", 50))
+	alimentador_invalido.adicionar_transformador(transformador_f8.new("TR-03", 0))
+
+	_local inconsistencias_invalidas << alimentador_invalido.validar_transformadores()
+	_if inconsistencias_invalidas.size = 2
+	_then
+		write("OK: validador encontrou ID duplicado e potencia zero.")
+	_else
+		write("FALHA: eram esperadas duas inconsistencias.")
+		falhas +<< 1
+	_endif
+
+	_if falhas = 0
+	_then
+		write("Todos os testes passaram.")
+	_else
+		write("Testes com falha: ", falhas)
+	_endif
+
+	_return falhas
+_endproc
+$
+
+# Exemplo de uso da acao, seguido da execucao dos testes.
+_local alimentador_demo << alimentador_f8.new("AL-DEMO")
+alimentador_demo.adicionar_transformador(transformador_f8.new("TR-100", 300))
+alimentador_demo.adicionar_transformador(transformador_f8.new("TR-200", 150))
+write("Potencia total do alimentador ", alimentador_demo.id, ": ",
+	alimentador_demo.potencia_total(), " kVA")
+acao_validar_alimentador_f8(alimentador_demo)
+executar_testes_fase8()
+
+# Qualidade: executar Magik Lint e revisar nomes antes de integrar ao modulo.
+# Depuracao: pausar em validar_transformadores e inspecionar ids_vistos
+# e inconsistencias durante a iteracao.
+# Desempenho: manter iteracao com fast_elements(); evitar copiar a colecao.
